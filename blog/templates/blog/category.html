@@ -1,0 +1,11 @@
+{% extends "blog/index.html" %}
+
+{% block page_title %}
+    <div class="flex items-center space-x-4 mb-8">
+        <h1 class="text-4xl font-bold text-gray-800">Category: {{ category }}</h1>
+        <a href="{% url 'blog_index' %}" 
+           class="text-blue-600 hover:text-blue-800">
+            ← Back to all posts
+        </a>
+    </div>
+{% endblock %}
