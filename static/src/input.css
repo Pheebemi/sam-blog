@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .blog-title {
+    @apply text-4xl font-bold text-gray-800 mb-2;
+  }
+  
+  .blog-container {
+    @apply max-w-4xl mx-auto px-4 py-8;
+  }
+  
+  .post-card {
+    @apply bg-white rounded-lg shadow-md p-6 mb-6 hover:shadow-lg transition duration-300;
+  }
+  
+  .post-title {
+    @apply text-2xl font-semibold text-gray-800 hover:text-blue-600;
+  }
+  
+  .post-meta {
+    @apply text-sm text-gray-600 mt-2;
+  }
+  
+  .category-tag {
+    @apply inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm mr-2;
+  }
+  
+  .comment-form {
+    @apply mt-8 space-y-4;
+  }
+  
+  .form-input {
+    @apply w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500;
+  }
+  
+  .submit-button {
+    @apply bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300;
+  }
+}
