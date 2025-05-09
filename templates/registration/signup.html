@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+{% load tailwind_tags %}
+
+{% block title %}Sign Up - Snowflakes Investment{% endblock %}
+
+{% block navigation %}{% endblock %}
+
+{% block content %}
+<section class="py-20 bg-primary min-h-screen flex items-center">
+    <div class="max-w-[400px] mx-auto px-4">
+        <div class="animate-slideUp">
+            <h2 class="text-4xl font-bold text-center mb-8">Create Account</h2>
+            
+            {% if form.errors %}
+            <div class="bg-red-500/10 text-red-500 p-4 rounded-lg mb-6 text-center">
+                {{ form.errors }}
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{% url 'signup' %}" class="space-y-6">
+                {% csrf_token %}
+                
+                <div>
+                    <label class="block font-poppins text-white mb-2">Name</label>
+                    {{ form.username }}
+                </div>
+
+                <div>
+                    <label class="block font-poppins text-white mb-2">Email</label>
+                    {{ form.email }}
+                </div>
+
+                <div>
+                    <label class="block font-poppins text-white mb-2">Password</label>
+                    {{ form.password1 }}
+                </div>
+
+                <div>
+                    <label class="block font-poppins text-white mb-2">Confirm Password</label>
+                    {{ form.password2 }}
+                </div>
+
+                <button type="submit" 
+                    class="w-full py-4 bg-secondary text-white font-poppins font-semibold rounded-lg hover:bg-secondary/90 transition-colors">
+                    Sign Up
+                </button>
+
+                <p class="text-center text-gray-400">
+                    Already Have an Account?
+                    <a href="{% url 'login' %}" class="text-secondary hover:text-secondary/80 transition-colors ml-1">
+                        Sign In
+                    </a>
+                </p>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block footer %}{% endblock %}

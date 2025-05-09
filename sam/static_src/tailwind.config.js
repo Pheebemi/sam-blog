@@ -8,23 +8,28 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                'primary': {
-                    '50': '#f0fdf9',
-                    '100': '#ccfbef',
-                    '200': '#99f6e0',
-                    '300': '#5eead4',
-                    '400': '#2dd4bf',
-                    '500': '#14b8a6',
-                    '600': '#0d9488',
-                    '700': '#0f766e',
-                    '800': '#115e59',
-                    '900': '#134e4a',
-                    '950': '#053c30',
+                'primary': '#0f182b',
+                'dark': {
+                    '100': '#1a2435',
+                    '200': '#141c2b',
                 },
-                'surface': {
-                    'dark': '#042820',
-                    'darker': '#031b16',
+                'light': {
+                    '100': '#ffffff',
+                    '300': '#94a3b8',
                 },
+                'secondary': '#3b82f6',
+            },
+            fontFamily: {
+                'poppins': ['Poppins', 'sans-serif'],
+            },
+            keyframes: {
+                slideUp: {
+                    '0%': { transform: 'translateY(20px)', opacity: '0' },
+                    '100%': { transform: 'translateY(0)', opacity: '1' },
+                },
+            },
+            animation: {
+                'slide-up': 'slideUp 0.6s ease forwards',
             },
         },
     },

@@ -1,0 +1,937 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Navigation -->
+<nav class="w-full fixed top-0 left-0 right-0 z-50 py-1 bg-primary shadow-lg border-none">
+    <!-- Navigation Block -->
+    {% block navigation %}
+    <nav class="bg-dark-100">
+        <!-- Navigation -->
+        <nav class="w-full fixed top-0 left-0 right-0 z-50 py-1 bg-primary shadow-lg border-none">
+            <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+                <!-- Logo and Brand -->
+                <a href="/" class="flex items-center gap-2 sm:gap-4">
+                    <img src="{% static 'img/log.png' %}" 
+                        alt="Snowflakes Logo" 
+                        class="w-[80px] h-[80px] sm:w-[90px] sm:h-[90px]"
+                    >
+                    <h1 class="font-poppins font-semibold text-light-100 text-[18px] sm:text-[22px] leading-tight">
+                        Snowflakes Investment
+                    </h1>
+                </a>
+
+                <!-- Desktop Navigation Links -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="/" class="text-light-300 hover:text-light-100 transition-colors">Home</a>
+                    <a href="/market" class="text-light-300 hover:text-light-100 transition-colors">Market</a>
+                </div>
+
+                <!-- Search Bar - Desktop -->
+                <div class="flex-1 max-w-[200px] mx-4 hidden sm:block">
+                    <input
+                        type="search"
+                        placeholder="Search..."
+                        class="w-full px-4 py-2 bg-dark-100 text-light-100 rounded-lg 
+                            border border-dark-200 focus:border-secondary focus:outline-none"
+                    >
+                </div>
+
+                <!-- Desktop Auth Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    {% if user.is_authenticated %}
+                        <span class="text-light-100">
+                            Welcome, {{ user.username }}
+                        </span>
+                        <a href="/dashboard">
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                Dashboard
+                            </button>
+                        </a>
+                        <form method="post" action="{% url 'logout' %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" 
+                                class="px-4 py-2 border border-gray-600 text-light-300 rounded-lg hover:text-white hover:border-gray-400 transition-colors">
+                                Logout
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="/login">
+                            <button class="px-4 py-2 border border-gray-600 text-light-300 rounded-lg hover:text-white hover:border-gray-400 transition-colors">
+                                Sign In
+                            </button>
+                        </a>
+                        <a href="/signup">
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                Register
+                            </button>
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button @click="isOpen = !isOpen" class="md:hidden text-light-100 p-2 ml-4">
+                    <svg x-show="!isOpen" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <svg x-show="isOpen" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Dropdown -->
+            <div x-show="isOpen"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 -translate-y-2"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 -translate-y-2"
+                class="md:hidden absolute right-4 top-[80px] w-[250px] bg-primary rounded-lg shadow-xl 
+                        border border-dark-200 z-[100]"
+                style="display: none;">
+                <div class="p-4 flex flex-col gap-4">
+                    <!-- Mobile Navigation Links -->
+                    <a href="/" class="text-light-300 hover:text-light-100 transition-colors block py-2">Home</a>
+                    <a href="/market" class="text-light-300 hover:text-light-100 transition-colors block py-2">Market</a>
+                    
+                    <!-- Mobile Search Bar -->
+                    <div class="sm:hidden">
+                        <input
+                            type="search"
+                            placeholder="Search..."
+                            class="w-full px-4 py-2 bg-dark-100 text-light-100 rounded-lg 
+                                border border-dark-200 focus:border-secondary focus:outline-none"
+                        >
+                    </div>
+
+                    <!-- Mobile Auth Section -->
+                    <div class="border-t border-dark-200 pt-4 mt-2">
+                        {% if user.is_authenticated %}
+                            <div class="flex flex-col gap-3">
+                                <span class="text-light-100">Welcome, {{ user.username }}</span>
+                                <a href="/dashboard" class="w-full">
+                                    <button class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                        Dashboard
+                                    </button>
+                                </a>
+                                <form method="post" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" 
+                                        class="w-full px-4 py-2 border border-gray-600 text-light-300 rounded-lg hover:text-white hover:border-gray-400 transition-colors">
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
+                        {% else %}
+                            <div class="flex flex-col gap-3">
+                                <a href="/login" class="w-full">
+                                    <button class="w-full px-4 py-2 border border-gray-600 text-light-300 rounded-lg hover:text-white hover:border-gray-400 transition-colors">
+                                        Sign In
+                                    </button>
+                                </a>
+                                <a href="/signup" class="w-full">
+                                    <button class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                        Register
+                                    </button>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </nav>
+    {% endblock %}
+</nav>
+
+<!-- Hero Section -->
+<section class="pt-24 min-h-screen flex items-center bg-primary relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 relative">
+        <!-- Floating Crypto Icons -->
+        <img src="{% static 'img/bitcoin.png' %}" alt="bitcoin" 
+            class="crypto-float absolute w-16 h-16 opacity-20"
+            style="top: 10%; left: 15%; animation: float1 4s infinite ease-in-out">
+
+        <img src="{% static 'img/eth.png' %}" alt="ethereum" 
+            class="crypto-float absolute w-16 h-16 opacity-20"
+            style="top: 15%; right: 20%; animation: float2 5s infinite ease-in-out">
+
+        <img src="{% static 'img/eth.png' %}" alt="ethereum" 
+            class="crypto-float absolute w-16 h-16 opacity-20"
+            style="top: 45%; right: 10%; animation: float3 5.5s infinite ease-in-out .5s">
+
+        <img src="{% static 'img/bitcoin.png' %}" alt="bitcoin" 
+            class="crypto-float absolute w-16 h-16 opacity-20"
+            style="top: 50%; left: 8%; animation: float4 6s infinite ease-in-out 1s">
+
+        <img src="{% static 'img/bitcoin.png' %}" alt="bitcoin" 
+            class="crypto-float absolute w-16 h-16 opacity-20"
+            style="bottom: 15%; left: 20%; animation: float5 4.5s infinite ease-in-out 2s">
+
+        <img src="{% static 'img/eth.png' %}" alt="ethereum" 
+            class="crypto-float absolute w-16 h-16 opacity-20"
+            style="bottom: 20%; right: 15%; animation: float6 5.2s infinite ease-in-out 1.5s">
+
+        <!-- Hero Content -->
+        <div class="flex flex-col items-center text-center z-10 relative fade-in-up">
+            <h1 class="text-5xl md:text-6xl font-bold text-white mb-6 max-w-[800px] slide-up">
+                Track, Invest, and Grow Your Crypto Portfolio
+            </h1>
+
+            <p class="text-xl text-gray-400 max-w-[600px] mb-8 slide-up-delay-200">
+                Real-time market data, advanced charts, and personalized insights.
+            </p>
+
+            <div class="flex flex-wrap gap-4 justify-center slide-up-delay-400">
+                <a href="" class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-lg font-medium">
+                    Explore Markets
+                </a>
+                <a href="" class="px-8 py-3 border border-gray-600 text-light-300 rounded-lg hover:text-white hover:border-gray-400 transition-colors text-lg font-medium">
+                    Get Started
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Market Overview Section -->
+<section class="py-20 bg-primary">
+    <div class="max-w-7xl mx-auto px-6">
+        <!-- Section Header -->
+        <div class="text-center mb-12 slide-up">
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                Top Cryptocurrencies by Market Cap
+            </h2>
+            <p class="text-xl text-gray-400 mt-4 max-w-[800px] mx-auto">
+                Track the latest prices and trends of the world's top cryptocurrencies
+            </p>
+        </div>
+
+        <!-- Coins Grid Container -->
+        <div id="coinsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Loading State -->
+            <div id="loadingIndicator" class="col-span-full flex justify-center items-center min-h-[200px]">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-secondary"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Investment Plans Section -->
+<section class="py-20 bg-primary" id="investments">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-12 slide-up">
+            <h2 class="text-4xl font-bold text-white mb-4">Investment Plans</h2>
+            <p class="text-light-300 max-w-2xl mx-auto">
+                Choose from our range of investment plans designed to meet your financial goals.
+                Start with as little as $100 and watch your investments grow.
+            </p>
+        </div>
+
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+    <!-- Starter Plan -->
+    <div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-dark-200 to-dark-300 p-6 slide-up"
+        style="animation-delay: 0.2s">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
+        <div class="space-y-6">
+            <div>
+                <h3 class="text-xl font-bold text-white mb-2">Starter Plan</h3>
+                <div class="flex items-baseline gap-1">
+                    <span class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                        5%
+                    </span>
+                    <span class="text-light-300">return</span>
+                </div>
+            </div>
+            
+            <div class="space-y-3">
+                <div class="flex justify-between">
+                    <span class="text-light-300">Min Investment</span>
+                    <span class="text-white font-medium">$100</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-light-300">Max Investment</span>
+                    <span class="text-white font-medium">$1,000</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-light-300">Duration</span>
+                    <span class="text-white font-medium">14 days</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-light-300">Risk Level</span>
+                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400">Low</span>
+                </div>
+            </div>
+
+            <ul class="space-y-2">
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Daily ROI
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Principal Return
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    No Hidden Fees
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    24/7 Support
+                </li>
+            </ul>
+
+            <a href="/signup" class="block w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90 transition-opacity text-center">
+                Get Started
+            </a>
+        </div>
+    </div>
+
+    <!-- Growth Plan -->
+    <div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-dark-200 to-dark-300 p-6 slide-up"
+        style="animation-delay: 0.4s">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-400"></div>
+        <div class="space-y-6">
+            <div>
+                <h3 class="text-xl font-bold text-white mb-2">Growth Plan</h3>
+                <div class="flex items-baseline gap-1">
+                    <span class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                        15%
+                    </span>
+                    <span class="text-light-300">return</span>
+                </div>
+            </div>
+            
+            <div class="space-y-3">
+                <div class="flex justify-between">
+                    <span class="text-light-300">Min Investment</span>
+                    <span class="text-white font-medium">$1,000</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-light-300">Max Investment</span>
+                    <span class="text-white font-medium">$5,000</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-light-300">Duration</span>
+                    <span class="text-white font-medium">20 days</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-light-300">Risk Level</span>
+                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400">Low</span>
+                </div>
+            </div>
+
+            <ul class="space-y-2">
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Weekly ROI
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Principal Return
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Investment Insurance
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Priority Support
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Market Analysis
+                </li>
+            </ul>
+
+            <a href="/signup" class="block w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-400 hover:opacity-90 transition-opacity text-center">
+                Get Started
+            </a>
+        </div>
+    </div>
+
+    <!-- Premium Plan -->
+    <div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-dark-200 to-dark-300 p-6 slide-up"
+        style="animation-delay: 0.6s">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-orange-400"></div>
+        <div class="space-y-6">
+            <div>
+                <h3 class="text-xl font-bold text-white mb-2">Premium Plan</h3>
+                <div class="flex items-baseline gap-1">
+                    <span class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                        40%
+                    </span>
+                    <span class="text-light-300">return</span>
+                </div>
+            </div>
+            
+            <div class="space-y-3">
+                <div class="flex justify-between">
+                    <span class="text-light-300">Min Investment</span>
+                    <span class="text-white font-medium">$5,000</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-light-300">Max Investment</span>
+                    <span class="text-white font-medium">$50,000</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-light-300">Duration</span>
+                    <span class="text-white font-medium">25 days</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-light-300">Risk Level</span>
+                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-400">Medium</span>
+                </div>
+            </div>
+
+            <ul class="space-y-2">
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Monthly ROI
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Principal Return
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Investment Insurance
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    VIP Support
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Market Analysis
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Portfolio Management
+                </li>
+            </ul>
+
+            <a href="/signup" class="block w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-400 hover:opacity-90 transition-opacity text-center">
+                Get Started
+            </a>
+        </div>
+    </div>
+
+    <!-- Elite Plan -->
+    <div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-dark-200 to-dark-300 p-6 slide-up"
+        style="animation-delay: 0.8s">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
+        <div class="space-y-6">
+            <div>
+                <h3 class="text-xl font-bold text-white mb-2">Elite Plan</h3>
+                <div class="flex items-baseline gap-1">
+                    <span class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                        100%
+                    </span>
+                    <span class="text-light-300">return</span>
+                </div>
+            </div>
+            
+            <div class="space-y-3">
+                <div class="flex justify-between">
+                    <span class="text-light-300">Min Investment</span>
+                    <span class="text-white font-medium">$50,000</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-light-300">Max Investment</span>
+                    <span class="text-white font-medium">No Limit</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-light-300">Duration</span>
+                    <span class="text-white font-medium">30 days</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-light-300">Risk Level</span>
+                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-400">Medium</span>
+                </div>
+            </div>
+
+            <ul class="space-y-2">
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Quarterly ROI
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Principal Return
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Investment Insurance
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Dedicated Account Manager
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Priority Market Access
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Custom Portfolio Management
+                </li>
+                <li class="flex items-center text-light-300 text-sm">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                    </svg>
+                    Private Investment Events
+                </li>
+            </ul>
+
+            <a href="/signup" class="block w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-emerald-500 to-teal-400 hover:opacity-90 transition-opacity text-center">
+                Get Started
+            </a>
+        </div>
+    </div>
+</div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="py-20 bg-primary">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16 slide-up">
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Get in Touch</h2>
+            <p class="text-xl text-gray-400 mt-4 max-w-[600px] mx-auto">
+                Have questions about our services? We're here to help.
+            </p>
+        </div>
+
+        <!-- Contact Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <!-- Email Card -->
+            <div class="flex flex-col items-center p-6 rounded-2xl bg-dark-100 hover:bg-dark-200 transition-all duration-300 slide-up"
+                style="animation-delay: 0.1s">
+                <div class="w-16 h-16 flex items-center justify-center rounded-full bg-secondary/10 mb-6">
+                    <svg class="w-8 h-8 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <h3 class="font-poppins font-semibold text-white text-[20px] text-center mb-4">
+                    Email Us
+                </h3>
+                <a href="mailto:snowflakesinvestment@gmail.com" 
+                class="font-poppins text-gray-400 hover:text-secondary text-[16px] text-center transition-colors">
+                    snowflakesinvestment@gmail.com
+                </a>
+            </div>
+
+            <!-- Phone Card -->
+            <div class="flex flex-col items-center p-6 rounded-2xl bg-dark-100 hover:bg-dark-200 transition-all duration-300 slide-up"
+                style="animation-delay: 0.2s">
+                <div class="w-16 h-16 flex items-center justify-center rounded-full bg-secondary/10 mb-6">
+                    <svg class="w-8 h-8 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                    </svg>
+                </div>
+                <h3 class="font-poppins font-semibold text-white text-[20px] text-center mb-4">
+                    Call Us
+                </h3>
+                <a href="tel:+15551234567" 
+                class="font-poppins text-gray-400 hover:text-secondary text-[16px] text-center transition-colors">
+                    +1 (555) 123-4567
+                </a>
+            </div>
+
+            <!-- Location Card -->
+            <div class="flex flex-col items-center p-6 rounded-2xl bg-dark-100 hover:bg-dark-200 transition-all duration-300 slide-up"
+                style="animation-delay: 0.3s">
+                <div class="w-16 h-16 flex items-center justify-center rounded-full bg-secondary/10 mb-6">
+                    <svg class="w-8 h-8 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </div>
+                <h3 class="font-poppins font-semibold text-white text-[20px] text-center mb-4">
+                    Visit Us
+                </h3>
+                <a href="https://maps.google.com" target="_blank"
+                class="font-poppins text-gray-400 hover:text-secondary text-[16px] text-center transition-colors">
+                    Sibla Services AG Grafenaustrasse 15 Zug, ZUG, 6300 Switzerland.
+                </a>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="max-w-[600px] mx-auto slide-up" style="animation-delay: 0.4s">
+            <form id="contactForm" class="space-y-6">
+                <div>
+                    <label for="name" class="block font-poppins text-white mb-2">Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        required
+                        class="w-full px-4 py-3 rounded-lg bg-dark-100 border border-dark-200 text-white focus:outline-none focus:border-secondary transition-colors"
+                        placeholder="Your name"
+                    >
+                </div>
+                <div>
+                    <label for="email" class="block font-poppins text-white mb-2">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        class="w-full px-4 py-3 rounded-lg bg-dark-100 border border-dark-200 text-white focus:outline-none focus:border-secondary transition-colors"
+                        placeholder="your@email.com"
+                    >
+                </div>
+                <div>
+                    <label for="message" class="block font-poppins text-white mb-2">Message</label>
+                    <textarea
+                        id="message"
+                        name="message"
+                        required
+                        rows="4"
+                        class="w-full px-4 py-3 rounded-lg bg-dark-100 border border-dark-200 text-white focus:outline-none focus:border-secondary transition-colors"
+                        placeholder="Your message"
+                    ></textarea>
+                </div>
+                <button
+                    type="submit"
+                    class="w-full py-4 bg-secondary text-white font-poppins font-semibold rounded-lg hover:bg-opacity-90 transition-colors"
+                >
+                    Send Message
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+<!-- Footer -->
+{% block footer %}
+<footer class="py-20 bg-primary">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            <!-- Logo and Description -->
+            <div class="space-y-6">
+                <a href="/" class="block">
+                    <img src="{% static 'img/log.png' %}" alt="Snowflakes" class="h-40 w-30">
+                </a>
+                <p class="font-poppins text-gray-300">
+                    Real-time cryptocurrency tracking and analysis
+                </p>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="pt-8 border-t border-gray-800">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="font-poppins text-gray-400 text-center md:text-left">
+                    © {% now "Y" %} SnowFlakes Investment. All rights reserved.
+                </p>
+                <div class="flex gap-6">
+                    <a href="/privacy" class="font-poppins text-gray-400 hover:text-secondary transition-colors">
+                        Privacy Policy
+                    </a>
+                    <a href="/terms" class="font-poppins text-gray-400 hover:text-secondary transition-colors">
+                        Terms of Service
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Your existing scripts -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script>
+    // Your existing JavaScript code
+    // ...contact form handling...
+    // ...coin fetching code...
+</script>
+
+<style>
+    /* Your existing CSS animations */
+    /* ...float animations... */
+    /* ...slide-up animations... */
+</style>
+{% endblock extra_js %}
+
+<!-- Add this JavaScript for form handling -->
+<script>
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form data
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            message: document.getElementById('message').value
+        };
+        
+        // Log form data (replace with your form submission logic)
+        console.log('Form submitted:', formData);
+        
+        // Reset form
+        this.reset();
+        
+        // Show success message (customize as needed)
+        alert('Thank you for your message. We will get back to you soon!');
+    });
+</script>
+
+<script>
+    // Add this to your existing script section or create a new one
+    function createCoinCard(coin, index) {
+        const delay = index * 0.1;
+        return `
+            <div class="bg-dark-100 rounded-lg p-6 min-w-[280px] opacity-0 transform translate-y-4"
+                style="animation: slideUp 0.5s ease forwards ${delay}s">
+                <div class="flex items-center gap-4 mb-4">
+                    <img src="${coin.image}" alt="${coin.name}" class="w-10 h-10">
+                    <div>
+                        <h3 class="font-poppins font-semibold text-light-100">${coin.symbol.toUpperCase()}</h3>
+                        <p class="text-light-300 text-sm">${coin.name}</p>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-semibold text-light-100">
+                            $${coin.current_price.toLocaleString()}
+                        </span>
+                        <span class="px-2 py-1 rounded text-sm ${
+                            coin.price_change_percentage_24h >= 0 
+                            ? 'bg-green-500/20 text-green-500' 
+                            : 'bg-red-500/20 text-red-500'
+                        }">
+                            ${coin.price_change_percentage_24h >= 0 ? '+' : ''}
+                            ${coin.price_change_percentage_24h.toFixed(2)}%
+                        </span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    async function fetchAndDisplayCoins() {
+        const container = document.getElementById('coinsContainer');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        try {
+            const response = await fetch(
+                'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=true&locale=en'
+            );
+
+            if (!response.ok) throw new Error('Failed to fetch data');
+
+            const coins = await response.json();
+            loadingIndicator.style.display = 'none';
+            
+            // Clear container and add coin cards
+            container.innerHTML = '';
+            coins.forEach((coin, index) => {
+                container.innerHTML += createCoinCard(coin, index);
+            });
+
+        } catch (error) {
+            loadingIndicator.innerHTML = `
+                <div class="text-red-500">
+                    Error fetching cryptocurrency data. Please try again later.
+                </div>
+            `;
+        }
+    }
+
+    // Initial fetch
+    fetchAndDisplayCoins();
+
+    // Refresh every 30 seconds
+    setInterval(fetchAndDisplayCoins, 30000);
+</script>
+
+<style>
+    @keyframes float1 {
+        0%, 100% { transform: translateY(0) rotate(0); }
+        50% { transform: translateY(-20px) rotate(10deg); }
+    }
+    
+    @keyframes float2 {
+        0%, 100% { transform: translateY(0) rotate(0); }
+        50% { transform: translateY(20px) rotate(-10deg); }
+    }
+    
+    @keyframes float3 {
+        0%, 100% { transform: translateY(0) rotate(0); }
+        50% { transform: translateY(25px) rotate(12deg); }
+    }
+    
+    @keyframes float4 {
+        0%, 100% { transform: translateY(0) rotate(0); }
+        50% { transform: translateY(-15px) rotate(-8deg); }
+    }
+    
+    @keyframes float5 {
+        0%, 100% { transform: translateY(0) rotate(0); }
+        50% { transform: translateY(-22px) rotate(15deg); }
+    }
+    
+    @keyframes float6 {
+        0%, 100% { transform: translateY(0) rotate(0); }
+        50% { transform: translateY(18px) rotate(-15deg); }
+    }
+
+    .slide-up {
+        animation: slideUp 0.6s ease forwards;
+    }
+
+    .slide-up-delay-200 {
+        animation: slideUp 0.6s ease forwards;
+        animation-delay: 0.2s;
+        opacity: 0;
+    }
+
+    .slide-up-delay-400 {
+        animation: slideUp 0.6s ease forwards;
+        animation-delay: 0.4s;
+        opacity: 0;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Add these animations to your existing style section */
+    .slide-up {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideUp 0.6s ease forwards;
+    }
+
+    @keyframes slideUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .bg-clip-text {
+        -webkit-background-clip: text;
+        background-clip: text;
+    }
+</style>
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script>
+function createCoinCard(coin, index) {
+    const delay = index * 0.1;
+    return `
+        <div class="bg-dark-100 rounded-lg p-6 transform transition-all duration-300 hover:scale-105">
+            <div class="flex items-center gap-4 mb-4">
+                <img src="${coin.image}" alt="${coin.name}" class="w-10 h-10">
+                <div>
+                    <h3 class="font-poppins font-semibold text-light-100">${coin.symbol.toUpperCase()}</h3>
+                    <p class="text-light-300 text-sm">${coin.name}</p>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-2xl font-semibold text-light-100">
+                        $${coin.current_price.toLocaleString()}
+                    </span>
+                    <span class="px-2 py-1 rounded text-sm ${
+                        coin.price_change_percentage_24h >= 0 
+                        ? 'bg-green-500/20 text-green-500' 
+                        : 'bg-red-500/20 text-red-500'
+                    }">
+                        ${coin.price_change_percentage_24h >= 0 ? '+' : ''}
+                        ${coin.price_change_percentage_24h.toFixed(2)}%
+                    </span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+async function fetchAndDisplayCoins() {
+    const container = document.getElementById('coinsContainer');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+
+    try {
+        const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=6&page=1&sparkline=false');
+        if (!response.ok) throw new Error('Failed to fetch data');
+
+        const coins = await response.json();
+        container.innerHTML = ''; // Clear container
+        coins.forEach((coin, index) => {
+            container.innerHTML += createCoinCard(coin, index);
+        });
+    } catch (error) {
+        container.innerHTML = `
+            <div class="col-span-full text-center text-red-500 py-8">
+                Unable to load cryptocurrency data. Please try again later.
+            </div>
+        `;
+    } finally {
+        loadingIndicator.style.display = 'none';
+    }
+}
+
+// Fetch coins when page loads
+document.addEventListener('DOMContentLoaded', fetchAndDisplayCoins);
+</script>
+</section>
+

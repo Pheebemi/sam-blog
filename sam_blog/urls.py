@@ -20,8 +20,15 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from blog import views
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("blog.url")),
+    path('admin/', admin.site.urls),
+    # Auth URLs first (before blog URLs)
+    path('signup/', views.signup_view, name='signup'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+    # Blog URLs last
+    path('', include('blog.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

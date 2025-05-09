@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-white">Welcome, {{ user.username }}</h1>
+            <p class="text-gray-400 mt-2">Manage your investments and track your profits</p>
+        </div>
+
+        <!-- Investment Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-dark-100 p-6 rounded-xl">
+                <h3 class="text-light-300 text-sm mb-2">Balance</h3>
+                <p class="text-2xl font-bold text-white">${{ user.balance }}</p>
+            </div>
+            <div class="bg-dark-100 p-6 rounded-xl">
+                <h3 class="text-light-300 text-sm mb-2">Total Invested</h3>
+                <p class="text-2xl font-bold text-white">${{ user.total_invested }}</p>
+            </div>
+            <div class="bg-dark-100 p-6 rounded-xl">
+                <h3 class="text-light-300 text-sm mb-2">Total Profit</h3>
+                <p class="text-2xl font-bold text-white">${{ user.total_profit }}</p>
+            </div>
+        </div>
+
+        <!-- Active Investments -->
+        <div class="bg-dark-100 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-white mb-4">Active Investments</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="text-left text-light-300">
+                        <tr>
+                            <th class="pb-4">Plan</th>
+                            <th class="pb-4">Amount</th>
+                            <th class="pb-4">Return Rate</th>
+                            <th class="pb-4">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-white">
+                        <!-- Add your investment rows here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
