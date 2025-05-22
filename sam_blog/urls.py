@@ -29,6 +29,10 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('dashboard/investments/', views.investments_view, name='dashboard_investments'),
+    path('dashboard/transactions/', views.transactions_view, name='dashboard_transactions'),
+    path('dashboard/settings/', views.settings_view, name='dashboard_settings'),
+
     # Blog URLs last
     path('', include('blog.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

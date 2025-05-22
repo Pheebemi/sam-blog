@@ -1,49 +1,84 @@
-{% extends "base.html" %}
-{% load static %}
+{% extends 'dashboard/base.html' %}
 
-{% block content %}
-<div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-7xl mx-auto">
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-white">Welcome, {{ user.username }}</h1>
-            <p class="text-gray-400 mt-2">Manage your investments and track your profits</p>
+{% block dashboard_content %}
+<!-- Overview Section -->
+<section id="overview" class="mb-12">
+    <h2 class="text-3xl font-bold text-white mb-6">Account Overview</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Balance Card -->
+        <div class="bg-dark-200 rounded-xl p-6">
+            <h3 class="text-gray-400 text-sm mb-2">Total Balance</h3>
+            <p class="text-2xl font-bold text-white">${{ balance|floatformat:2 }}</p>
+            <div class="mt-2 text-green-500">+2.5% today</div>
         </div>
-
-        <!-- Investment Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-dark-100 p-6 rounded-xl">
-                <h3 class="text-light-300 text-sm mb-2">Balance</h3>
-                <p class="text-2xl font-bold text-white">${{ user.balance }}</p>
-            </div>
-            <div class="bg-dark-100 p-6 rounded-xl">
-                <h3 class="text-light-300 text-sm mb-2">Total Invested</h3>
-                <p class="text-2xl font-bold text-white">${{ user.total_invested }}</p>
-            </div>
-            <div class="bg-dark-100 p-6 rounded-xl">
-                <h3 class="text-light-300 text-sm mb-2">Total Profit</h3>
-                <p class="text-2xl font-bold text-white">${{ user.total_profit }}</p>
-            </div>
+        
+        <!-- Total Invested Card -->
+        <div class="bg-dark-200 rounded-xl p-6">
+            <h3 class="text-gray-400 text-sm mb-2">Total Invested</h3>
+            <p class="text-2xl font-bold text-white">${{ total_invested|floatformat:2 }}</p>
+            <div class="mt-2 text-gray-400">Active investments: 3</div>
         </div>
-
-        <!-- Active Investments -->
-        <div class="bg-dark-100 rounded-xl p-6 mb-8">
-            <h2 class="text-xl font-bold text-white mb-4">Active Investments</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="text-left text-light-300">
-                        <tr>
-                            <th class="pb-4">Plan</th>
-                            <th class="pb-4">Amount</th>
-                            <th class="pb-4">Return Rate</th>
-                            <th class="pb-4">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-white">
-                        <!-- Add your investment rows here -->
-                    </tbody>
-                </table>
-            </div>
+        
+        <!-- Profit Card -->
+        <div class="bg-dark-200 rounded-xl p-6">
+            <h3 class="text-gray-400 text-sm mb-2">Total Profit</h3>
+            <p class="text-2xl font-bold text-white">${{ total_profit|floatformat:2 }}</p>
+            <div class="mt-2 text-green-500">+15% all time</div>
         </div>
     </div>
-</div>
+</section>
+
+<!-- Active Investments -->
+<section id="investments" class="mb-12">
+    <h2 class="text-3xl font-bold text-white mb-6">Active Investments</h2>
+    <div class="bg-dark-200 rounded-xl overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-dark-300">
+                <tr>
+                    <th class="px-6 py-3 text-left text-gray-400">Plan</th>
+                    <th class="px-6 py-3 text-left text-gray-400">Amount</th>
+                    <th class="px-6 py-3 text-left text-gray-400">Return</th>
+                    <th class="px-6 py-3 text-left text-gray-400">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-dark-100">
+                <tr class="text-gray-300">
+                    <td class="px-6 py-4">Starter Plan</td>
+                    <td class="px-6 py-4">$1,000</td>
+                    <td class="px-6 py-4 text-green-500">+5%</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 bg-green-500/20 text-green-500 rounded">Active</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- Recent Transactions -->
+<section id="transactions">
+    <h2 class="text-3xl font-bold text-white mb-6">Recent Transactions</h2>
+    <div class="bg-dark-200 rounded-xl overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-dark-300">
+                <tr>
+                    <th class="px-6 py-3 text-left text-gray-400">Date</th>
+                    <th class="px-6 py-3 text-left text-gray-400">Type</th>
+                    <th class="px-6 py-3 text-left text-gray-400">Amount</th>
+                    <th class="px-6 py-3 text-left text-gray-400">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-dark-100">
+                <tr class="text-gray-300">
+                    <td class="px-6 py-4">May 22, 2025</td>
+                    <td class="px-6 py-4">Deposit</td>
+                    <td class="px-6 py-4 text-green-500">+$500.00</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 bg-green-500/20 text-green-500 rounded">Completed</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
 {% endblock %}

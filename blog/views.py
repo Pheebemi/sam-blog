@@ -70,15 +70,19 @@ def login_view(request):
 
 @login_required
 def dashboard_view(request):
-    user = request.user
-    context = {
-        'balance': user.balance,
-        'total_invested': user.total_invested,
-        'total_profit': user.total_profit,
-        'posts': Post.objects.filter(author=user).order_by('-created_on')
-    }
-    return render(request, 'dashboard.html', context)
+    return render(request, 'dashboard/index.html')
 
+@login_required
+def investments_view(request):
+    return render(request, 'dashboard/investments.html')
+
+@login_required
+def transactions_view(request):
+    return render(request, 'dashboard/transactions.html')
+
+@login_required
+def settings_view(request):
+    return render(request, 'dashboard/settings.html')
 def logout_view(request):
     logout(request)
     return redirect('home')
