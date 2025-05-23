@@ -7,6 +7,8 @@ from .models import Post, Comment, Category, CryptoUser
 from blog.form import CommentForm
 import random
 from datetime import datetime, timedelta
+from django.http import JsonResponse
+from .models import Transaction
 
 def blog_index(request):
     context = {
@@ -115,7 +117,7 @@ def investments_view(request):
             },
             {
                 'name': 'Growth Plan',
-                'return_rate': "12-18",
+                'return_rate': "15",
                 'risk_level': 'Low Risk',
                 'min_investment': "1,000.00",
                 'max_investment': "5,000.00",
@@ -125,7 +127,7 @@ def investments_view(request):
                 'name': 'Premium Plan',
                 'return_rate': "40",
                 'risk_level': 'Medium Risk', 
-                'min_investment': "50500.00",
+                'min_investment': "5000.00",
                 'max_investment': "50,000.00",
                 'duration': "25 Days"
             },
@@ -142,8 +144,64 @@ def investments_view(request):
     return render(request, 'dashboard/investments.html', context)
 
 @login_required
+def submit_investment(request):
+    if request.method == 'POST':
+        try:
+            plan_name = request.POST.get('plan_name')
+            amount = request.POST.get('amount')
+            payment_method = request.POST.get('payment_method')
+            wallet_address = request.POST.get('wallet_address', '')
+            return_rate = request.POST.get('return_rate')
+            
+            # Convert amount and return rate to decimal
+            amount_decimal = float(amount.replace('$', '').replace(',', ''))
+            return_rate_decimal = float(return_rate.replace('%', ''))
+            expected_return = amount_decimal * (1 + return_rate_decimal/100)
+            
+            # Set completion date based on plan duration
+            duration_map = {
+                'Starter Plan': 14,
+                'Growth Plan': 20,
+                'Premium Plan': 25,
+                'Elite Plan': 30
+            }
+            completion_date = datetime.now() + timedelta(days=duration_map.get(plan_name, 30))
+
+            # Create transaction
+            transaction = Transaction.objects.create(
+                user=request.user,
+                plan_name=plan_name,
+                amount=amount_decimal,
+                payment_method=payment_method,
+                wallet_address=wallet_address,
+                return_rate=return_rate_decimal,
+                expected_return=expected_return,
+                completion_date=completion_date,
+                status='pending'
+            )
+            
+            return JsonResponse({
+                'status': 'success',
+                'transaction_id': transaction.id,
+                'message': 'Transaction submitted successfully'
+            })
+            
+        except Exception as e:
+            print(f"Error processing investment: {str(e)}")  # Add logging
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            }, status=400)
+    
+    return JsonResponse({
+        'status': 'error',
+        'message': 'Invalid request method'
+    }, status=405)
+
+@login_required
 def transactions_view(request):
-    return render(request, 'dashboard/transactions.html')
+    transactions = Transaction.objects.filter(user=request.user)
+    return render(request, 'dashboard/transactions.html', {'transactions': transactions})
 
 @login_required
 def settings_view(request):

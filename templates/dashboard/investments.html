@@ -2,6 +2,9 @@
 {% load static %}
 
 {% block dashboard_content %}
+<!-- Add CSRF token at the top of your content -->
+{% csrf_token %}
+
 <div class="space-y-8 p-6">
   <!-- Investment Plans Section -->
   <section>
@@ -390,17 +393,62 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Submit payment
-  submitPaymentBtn.addEventListener('click', function() {
-    paymentModal.classList.add('hidden');
-    processingModal.classList.remove('hidden');
+  submitPaymentBtn.addEventListener('click', async function() {
+    // Show loading state
+    submitPaymentBtn.disabled = true;
+    submitPaymentBtn.innerHTML = `
+        <span class="flex items-center">
+            Processing...
+            <svg class="animate-spin ml-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+        </span>
+    `;
+
+    const formData = new FormData();
+    const currentPaymentMethod = document.querySelector('.bg-secondary[data-method]').getAttribute('data-method');
+    const walletAddress = document.getElementById('walletAddress');
+
+    formData.append('plan_name', modalPlanName.textContent);
+    formData.append('amount', paymentAmount.textContent.replace('$', '').trim());
+    formData.append('payment_method', currentPaymentMethod);
+    formData.append('wallet_address', currentPaymentMethod === 'bank' ? 'bank_transfer' : walletAddress.value);
+    formData.append('return_rate', modalReturnRate.textContent.replace('%', '').trim());
     
-    // Simulate processing delay
-    setTimeout(() => {
-      processingModal.classList.add('hidden');
-      // Here you would typically redirect or show success message
-      // window.location.href = '/dashboard';
-    }, 3000);
-  });
+    try {
+        const response = await fetch('/submit-investment/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            }
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Hide payment modal
+            paymentModal.classList.add('hidden');
+            // Show processing modal
+            processingModal.classList.remove('hidden');
+
+            // Set timeout for redirect
+            setTimeout(() => {
+                window.location.href = '/dashboard/transactions/';
+            }, 2000);
+        } else {
+            throw new Error(data.message || 'Payment submission failed');
+        }
+    } catch (error) {
+        console.error('Error submitting transaction:', error);
+        alert('Failed to submit payment: ' + error.message);
+        
+        // Reset button state
+        submitPaymentBtn.disabled = false;
+        submitPaymentBtn.innerHTML = "I've Made the Payment";
+    }
+});
 });
 </script>
 {% endblock %}

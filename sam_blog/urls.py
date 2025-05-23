@@ -32,6 +32,7 @@ urlpatterns = [
     path('dashboard/investments/', views.investments_view, name='dashboard_investments'),
     path('dashboard/transactions/', views.transactions_view, name='dashboard_transactions'),
     path('dashboard/settings/', views.settings_view, name='dashboard_settings'),
+    path('submit-investment/', views.submit_investment, name='submit_investment'),
 
     # Blog URLs last
     path('', include('blog.urls')),
