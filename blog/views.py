@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm, LoginForm
 from .models import Post, Comment, Category, CryptoUser
 from blog.form import CommentForm
+import random
+from datetime import datetime, timedelta
 
 def blog_index(request):
     context = {
@@ -70,7 +72,30 @@ def login_view(request):
 
 @login_required
 def dashboard_view(request):
-    return render(request, 'dashboard/index.html')
+    # Generate sample orders data
+    first_names = ['Emma', 'Liam', 'Olivia', 'Noah', 'Ava', 'Ethan', 'Sophia']
+    last_names = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller']
+    statuses = ['Completed', 'Pending', 'Processing']
+    
+    orders = []
+    for i in range(10):  # Generate 10 sample orders
+        amount = round(random.uniform(100, 10000), 2)
+        date = datetime.now() - timedelta(days=random.randint(0, 7))
+        
+        orders.append({
+            'id': i + 1,
+            'customer': f"{random.choice(first_names)} {random.choice(last_names)}",
+            'amount': f"${amount:,.2f}",
+            'status': random.choice(statuses),
+            'date': date.strftime('%Y-%m-%d')
+        })
+
+    context = {
+        'balance': 30345.67,
+        'orders': sorted(orders, key=lambda x: x['date'], reverse=True)
+    }
+    
+    return render(request, 'dashboard/index.html', context)
 
 @login_required
 def investments_view(request):
