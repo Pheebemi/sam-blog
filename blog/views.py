@@ -99,7 +99,47 @@ def dashboard_view(request):
 
 @login_required
 def investments_view(request):
-    return render(request, 'dashboard/investments.html')
+    context = {
+        'total_invested': "85,000.00",
+        'active_investments': "12",
+        'total_returns': "12,750.00",
+        'avg_roi': "35.5",
+        'investment_plans': [
+            {
+                'name': 'Starter Plan',
+                'return_rate': "5",
+                'risk_level': 'Low Risk',
+                'min_investment': "100",
+                'max_investment': "1000",
+                'duration': "14 Days"
+            },
+            {
+                'name': 'Growth Plan',
+                'return_rate': "12-18",
+                'risk_level': 'Low Risk',
+                'min_investment': "1,000.00",
+                'max_investment': "5,000.00",
+                'duration': "20 Days"
+            },
+            {
+                'name': 'Premium Plan',
+                'return_rate': "40",
+                'risk_level': 'Medium Risk', 
+                'min_investment': "50500.00",
+                'max_investment': "50,000.00",
+                'duration': "25 Days"
+            },
+            {
+                'name': 'Elite Plan',
+                'return_rate': "100",
+                'risk_level': 'Medium Risk',
+                'min_investment': "50,000.00",
+                'max_investment': "No Limit",
+                'duration': "30 Days"
+            },
+        ],
+    }
+    return render(request, 'dashboard/investments.html', context)
 
 @login_required
 def transactions_view(request):

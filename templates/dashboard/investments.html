@@ -1,0 +1,406 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block dashboard_content %}
+<div class="space-y-8 p-6">
+  <!-- Investment Plans Section -->
+  <section>
+    <h2 class="text-2xl font-bold text-white mb-8">Investment Plans</h2>
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {% for plan in investment_plans %}
+      <div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-dark-200 to-dark-300 p-6 hover:-translate-y-1 transition-transform duration-300">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r 
+          {% if plan.name == 'Basic Plan' %}from-blue-500 to-cyan-400
+          {% elif plan.name == 'Standard Plan' %}from-purple-500 to-pink-400
+          {% elif plan.name == 'Premium Plan' %}from-amber-500 to-orange-400
+          {% else %}from-emerald-500 to-teal-400{% endif %}"></div>
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-xl font-bold text-white mb-2">{{ plan.name }}</h3>
+            <div class="flex items-baseline gap-1">
+              <span class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                {{ plan.return_rate }}%
+              </span>
+              <span class="text-light-300">return</span>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex justify-between">
+              <span class="text-light-300">Min Investment</span>
+              <span class="text-white font-medium">${{ plan.min_investment }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-light-300">Max Investment</span>
+              <span class="text-white font-medium">${{ plan.max_investment }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-light-300">Duration</span>
+              <span class="text-white font-medium">{{ plan.duration }} Days</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-light-300">Risk Level</span>
+              <span class="px-2 py-1 rounded-full text-xs font-medium 
+                {% if plan.risk_level == 'Low Risk' %}bg-green-500/20 text-green-400
+                {% elif plan.risk_level == 'Medium Risk' %}bg-yellow-500/20 text-yellow-400
+                {% elif plan.risk_level == 'High Risk' %}bg-orange-500/20 text-orange-400
+                {% else %}bg-red-500/20 text-red-400{% endif %}">
+                {{ plan.risk_level }}
+              </span>
+            </div>
+          </div>
+          <ul class="space-y-2">
+            {% if plan.name == 'Basic Plan' %}
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Daily ROI
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Principal Return
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                No Hidden Fees
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                24/7 Support
+              </li>
+            {% elif plan.name == 'Standard Plan' %}
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Weekly ROI
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Principal Return
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Investment Insurance
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Priority Support
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Market Analysis
+              </li>
+            {% elif plan.name == 'Premium Plan' %}
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Monthly ROI
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Principal Return
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Investment Insurance
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                VIP Support
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Market Analysis
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Portfolio Management
+              </li>
+            {% else %}
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Quarterly ROI
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Principal Return
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Investment Insurance
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Dedicated Account Manager
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Priority Market Access
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Custom Portfolio Management
+              </li>
+              <li class="flex items-center text-light-300 text-sm">
+                <svg class="w-4 h-4 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+                </svg>
+                Private Investment Events
+              </li>
+            {% endif %}
+          </ul>
+          <button class="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r 
+            {% if plan.name == 'Starter Plan' %}from-blue-500 to-cyan-400
+            {% elif plan.name == 'Growth Plan' %}from-purple-500 to-pink-400
+            {% elif plan.name == 'Premium Plan' %}from-amber-500 to-orange-400
+            {% else %}from-emerald-500 to-teal-400{% endif %} hover:opacity-90 transition-opacity">
+            Invest Now
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Payment Modal (hidden by default) -->
+  <div id="paymentModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div class="bg-dark-200 rounded-xl p-6 w-full max-w-md mx-4">
+      <h3 class="text-xl font-bold text-white mb-4">Invest in <span id="modalPlanName">Plan</span></h3>
+      <div class="space-y-6">
+        <div class="bg-dark-100 rounded-lg p-4">
+          <div class="flex justify-between mb-2">
+            <span class="text-light-300">Investment Range:</span>
+            <span class="text-white" id="modalInvestmentRange">$100 - $1,000</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-light-300">Expected Return:</span>
+            <span class="text-green-400" id="modalReturnRate">5%</span>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <label class="text-light-300 block">Select Payment Method</label>
+          <div class="grid grid-cols-4 gap-2">
+            <button class="p-2 rounded-lg text-sm bg-secondary text-white" data-method="bitcoin">
+              Bitcoin
+            </button>
+            <button class="p-2 rounded-lg text-sm bg-dark-100 text-light-300" data-method="ethereum">
+              Ethereum
+            </button>
+            <button class="p-2 rounded-lg text-sm bg-dark-100 text-light-300" data-method="usdt">
+              USDT
+            </button>
+            <button class="p-2 rounded-lg text-sm bg-dark-100 text-light-300" data-method="bank">
+              Bank
+            </button>
+          </div>
+        </div>
+
+        <div id="cryptoPayment" class="space-y-3">
+          <label class="text-light-300 block">Wallet Address</label>
+          <div class="relative">
+            <input type="text" id="walletAddress" value="1P9a8f3kvdDgGjF8qyKLd58MEp5oRfrmSx" readonly 
+              class="w-full px-4 py-3 bg-dark-100 border border-dark-300 rounded-lg text-white focus:outline-none focus:border-secondary pr-24">
+            <button id="copyAddressBtn" class="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1 bg-secondary text-white rounded-md text-sm hover:bg-secondary-dark transition-colors">
+              Copy
+            </button>
+          </div>
+          <p class="text-xs text-light-300">
+            Send exactly <span id="paymentAmount">$100</span> to this address
+          </p>
+        </div>
+
+        <div id="bankPayment" class="space-y-3 hidden">
+          <label class="text-light-300 block">Bank Transfer Details</label>
+          <div class="bg-dark-100 rounded-lg p-4 text-white space-y-2">
+            <p><strong>Bank Name:</strong> Deutsche Kreditbank</p>
+            <p><strong>Account Number:</strong> DE83120300001057443945</p>
+            <p><strong>Account Name:</strong> Asya Baltadzhieva</p>
+          </div>
+          <p class="text-xs text-light-300">
+            Transfer exactly <span id="bankPaymentAmount">$100</span> and include your name as reference
+          </p>
+        </div>
+
+        <div class="mt-6 flex justify-between">
+          <button id="cancelPaymentBtn" class="px-4 py-2 text-light-300 hover:text-white transition-colors">
+            Cancel
+          </button>
+          <button id="submitPaymentBtn" class="px-6 py-2 bg-secondary text-white rounded-lg hover:bg-secondary-dark transition-colors">
+            I've Made the Payment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Processing Modal (hidden by default) -->
+  <div id="processingModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div class="bg-dark-200 rounded-xl p-6 w-full max-w-md mx-4 text-center py-8">
+      <div class="text-green-400 text-5xl mb-4">✓</div>
+      <h3 class="text-xl font-bold text-white mb-2">Payment Submitted</h3>
+      <p class="text-light-300">We're processing your payment...</p>
+      <div class="mt-4 flex justify-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-secondary"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Modal elements
+  const paymentModal = document.getElementById('paymentModal');
+  const processingModal = document.getElementById('processingModal');
+  const modalPlanName = document.getElementById('modalPlanName');
+  const modalInvestmentRange = document.getElementById('modalInvestmentRange');
+  const modalReturnRate = document.getElementById('modalReturnRate');
+  const paymentAmount = document.getElementById('paymentAmount');
+  const bankPaymentAmount = document.getElementById('bankPaymentAmount');
+  const cryptoPayment = document.getElementById('cryptoPayment');
+  const bankPayment = document.getElementById('bankPayment');
+  const walletAddress = document.getElementById('walletAddress');
+  const copyAddressBtn = document.getElementById('copyAddressBtn');
+  const cancelPaymentBtn = document.getElementById('cancelPaymentBtn');
+  const submitPaymentBtn = document.getElementById('submitPaymentBtn');
+
+  // Wallet addresses
+  const walletAddresses = {
+    bitcoin: '1P9a8f3kvdDgGjF8qyKLd58MEp5oRfrmSx',
+    ethereum: '0x632a9f212c471ed37ca4d6490050dafa1b2319c2',
+    usdt: 'TNoEVcvCtkWLbHjwvJkqLdy3mzddDBQdmS'
+  };
+
+  // Investment plan buttons
+  const investButtons = document.querySelectorAll('.relative.overflow-hidden.rounded-xl button:last-child');
+  
+  // Payment method buttons
+  const paymentMethodButtons = document.querySelectorAll('[data-method]');
+
+  // Set up event listeners for invest buttons
+  investButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const planCard = this.closest('.relative.overflow-hidden.rounded-xl');
+      const planName = planCard.querySelector('h3').textContent;
+      const minInvestment = planCard.querySelectorAll('div.justify-between span.text-white')[0].textContent;
+      const maxInvestment = planCard.querySelectorAll('div.justify-between span.text-white')[1].textContent;
+      const returnRate = planCard.querySelector('span.text-3xl').textContent;
+
+      // Update modal content
+      modalPlanName.textContent = planName;
+      modalInvestmentRange.textContent = `${minInvestment} - ${maxInvestment}`;
+      modalReturnRate.textContent = returnRate;
+      paymentAmount.textContent = minInvestment;
+      bankPaymentAmount.textContent = minInvestment;
+
+      // Set default payment method to Bitcoin
+      setPaymentMethod('bitcoin');
+
+      // Show modal
+      paymentModal.classList.remove('hidden');
+    });
+  });
+
+  // Set up event listeners for payment method buttons
+  paymentMethodButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const method = this.getAttribute('data-method');
+      setPaymentMethod(method);
+    });
+  });
+
+  // Function to set payment method
+  function setPaymentMethod(method) {
+    // Update active button
+    paymentMethodButtons.forEach(button => {
+      if (button.getAttribute('data-method') === method) {
+        button.classList.remove('bg-dark-100', 'text-light-300');
+        button.classList.add('bg-secondary', 'text-white');
+      } else {
+        button.classList.remove('bg-secondary', 'text-white');
+        button.classList.add('bg-dark-100', 'text-light-300');
+      }
+    });
+
+    // Update payment section
+    if (method === 'bank') {
+      cryptoPayment.classList.add('hidden');
+      bankPayment.classList.remove('hidden');
+    } else {
+      cryptoPayment.classList.remove('hidden');
+      bankPayment.classList.add('hidden');
+      walletAddress.value = walletAddresses[method];
+    }
+  }
+
+  // Copy wallet address
+  copyAddressBtn.addEventListener('click', async function() {
+    try {
+      await navigator.clipboard.writeText(walletAddress.value);
+      copyAddressBtn.textContent = 'Copied!';
+      setTimeout(() => {
+        copyAddressBtn.textContent = 'Copy';
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy address: ', err);
+    }
+  });
+
+  // Cancel payment
+  cancelPaymentBtn.addEventListener('click', function() {
+    paymentModal.classList.add('hidden');
+  });
+
+  // Submit payment
+  submitPaymentBtn.addEventListener('click', function() {
+    paymentModal.classList.add('hidden');
+    processingModal.classList.remove('hidden');
+    
+    // Simulate processing delay
+    setTimeout(() => {
+      processingModal.classList.add('hidden');
+      // Here you would typically redirect or show success message
+      // window.location.href = '/dashboard';
+    }, 3000);
+  });
+});
+</script>
+{% endblock %}
