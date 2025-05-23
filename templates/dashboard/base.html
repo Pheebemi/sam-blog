@@ -3,19 +3,23 @@
 
 {% block content %}
 <div class="flex h-screen bg-primary overflow-hidden">
+    <!-- Sidebar Backdrop for Mobile -->
+    <div id="sidebarBackdrop" class="fixed inset-0 bg-black/50 z-20 lg:hidden hidden"></div>
+
     <!-- Sidebar -->
-    <div id="sidebar" class="bg-dark-100 h-full fixed left-0 top-0 w-64 transform transition-transform duration-300">
+    <div id="sidebar" class="bg-dark-100 h-full fixed left-0 top-0 w-64 transform transition-transform duration-300 -translate-x-full lg:translate-x-0 z-30">
         <div class="p-4">
-            <!-- Logo and Toggle -->
+            <!-- Logo and Mobile Toggle -->
             <div class="flex items-center justify-between mb-8">
                 <div class="flex items-center gap-2">
                     <a href="{% url 'home' %}" class="text-light-100 hover:text-secondary transition-colors flex items-center gap-2">
                         <h1 class="text-light-100 font-semibold text-xl whitespace-nowrap">Snowflakes</h1>
                     </a>
                 </div>
-                <button id="sidebarToggle" class="text-light-100 p-2 hover:bg-dark-200 rounded-lg transition-colors">
+                <!-- Mobile toggle button (visible only on mobile) -->
+                <button id="mobileMenuCloseBtn" class="lg:hidden text-light-100 p-2 hover:bg-dark-200 rounded-lg transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
@@ -55,26 +59,24 @@
     </div>
 
     <!-- Main Content -->
-    <div id="mainContent" class="flex-1 flex flex-col transition-all duration-300 ml-64">
+    <div id="mainContent" class="flex-1 flex flex-col transition-all duration-300 lg:ml-64 ml-0">
         <!-- Top Navigation -->
         <div class="bg-dark-100 border-b border-dark-200 h-16 flex items-center justify-between px-6">
             <div class="flex items-center gap-4">
-                <button id="mobileMenuBtn" class="text-light-100 p-2 hover:bg-dark-200 rounded-lg transition-colors md:hidden">
+                <!-- Mobile Menu Button (visible only on mobile) -->
+                <button id="mobileMenuOpenBtn" class="lg:hidden text-light-100 p-2 hover:bg-dark-200 rounded-lg transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
-                <div class="flex items-center gap-4">
-                    <a href="{% url 'home' %}" class="flex items-center gap-2 px-4 py-2 bg-secondary rounded-lg text-white hover:bg-secondary/90 transition-colors shadow-lg">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                        </svg>
-                        <span class="font-medium">Home</span>
-                    </a>
-                </div>
+                <a href="{% url 'home' %}" class="flex items-center gap-2 px-4 py-2 bg-secondary rounded-lg text-white hover:bg-secondary/90 transition-colors shadow-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span class="font-medium">Home</span>
+                </a>
             </div>
-
-            <!-- User Profile -->
+            <!-- User Profile Section -->
             <div class="relative" id="profileDropdown">
                 <button class="flex items-center gap-2 text-light-100">
                     <span class="hidden md:block">Welcome, {{ request.user.username }}</span>
@@ -82,9 +84,8 @@
                         {{ request.user.username|make_list|first|upper }}
                     </div>
                 </button>
-                
                 <!-- Profile Dropdown Menu -->
-                <div id="profileMenu" class="hidden absolute right-0 top-12 w-48 bg-dark-100 rounded-lg shadow-lg py-2 border border-dark-200">
+                <div id="profileMenu" class="hidden absolute right-0 top-12 w-48 bg-dark-100 rounded-lg shadow-lg py-2 border border-dark-200 z-40">
                     <a href="{% url 'home' %}" class="block px-4 py-2 text-light-100 hover:bg-dark-200 transition-colors">
                         Home
                     </a>
@@ -108,33 +109,86 @@
     </div>
 </div>
 
-<!-- Add this to your existing scripts section -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById('sidebar');
-    const mainContent = document.getElementById('mainContent');
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const mobileMenuOpenBtn = document.getElementById('mobileMenuOpenBtn');
+    const mobileMenuCloseBtn = document.getElementById('mobileMenuCloseBtn');
     const profileDropdown = document.getElementById('profileDropdown');
     const profileMenu = document.getElementById('profileMenu');
-    
-    function toggleSidebar() {
-        sidebar.classList.toggle('-translate-x-full');
-        mainContent.classList.toggle('ml-0');
-        mainContent.classList.toggle('ml-64');
+    const mainContent = document.getElementById('mainContent');
+
+    // Function to open sidebar (mobile only)
+    function openSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        sidebarBackdrop.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when sidebar is open
     }
 
-    sidebarToggle.addEventListener('click', toggleSidebar);
-    mobileMenuBtn.addEventListener('click', toggleSidebar);
+    // Function to close sidebar (mobile only)
+    function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        sidebarBackdrop.classList.add('hidden');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
 
-    profileDropdown.addEventListener('click', () => {
+    // Toggle sidebar on mobile open button click
+    mobileMenuOpenBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openSidebar();
+    });
+
+    // Close sidebar on mobile close button click
+    mobileMenuCloseBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        closeSidebar();
+    });
+
+    // Close sidebar when clicking on backdrop
+    sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    // Close sidebar when clicking on a nav item (mobile only)
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+            if (window.innerWidth < 1024) { // Only for mobile
+                closeSidebar();
+            }
+        });
+    });
+
+    // Close sidebar when clicking outside (mobile only)
+    document.addEventListener('click', function(e) {
+        if (window.innerWidth < 1024) { // Only for mobile
+            if (!sidebar.contains(e.target) && !mobileMenuOpenBtn.contains(e.target)) {
+                closeSidebar();
+            }
+        }
+    });
+
+    // Profile dropdown toggle
+    profileDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
         profileMenu.classList.toggle('hidden');
     });
 
-    // Close profile menu when clicking outside
-    document.addEventListener('click', (e) => {
+    // Close profile dropdown when clicking outside
+    document.addEventListener('click', function(e) {
         if (!profileDropdown.contains(e.target)) {
             profileMenu.classList.add('hidden');
+        }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 1024) {
+            // Desktop view - ensure sidebar is visible
+            sidebar.classList.remove('-translate-x-full');
+            sidebarBackdrop.classList.add('hidden');
+            document.body.style.overflow = ''; // Restore scrolling
+        } else {
+            // Mobile view - ensure sidebar is hidden by default
+            sidebar.classList.add('-translate-x-full');
         }
     });
 });
@@ -142,19 +196,54 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <style>
 .nav-item {
-    @apply flex items-center gap-4 p-3 rounded-lg transition-colors text-light-300 hover:bg-dark-200 hover:text-white;
+    @apply flex items-center gap-3 p-3 rounded-lg transition-all duration-200 text-light-300 hover:bg-dark-200 hover:text-white;
 }
-
+.nav-item svg {
+    @apply w-5 h-5 min-w-[1.25rem];
+}
+.nav-item span {
+    @apply whitespace-nowrap;
+}
 .nav-item.active {
     @apply bg-secondary text-white;
 }
 
-@media (max-width: 768px) {
+/* Ensure transition for sidebar */
+#sidebar {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Backdrop transition */
+#sidebarBackdrop {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Prevent horizontal scroll on mobile when sidebar is open */
+body.sidebar-open {
+    overflow: hidden;
+}
+
+/* Z-index management */
+#sidebar {
+    z-index: 30;
+}
+#sidebarBackdrop {
+    z-index: 20;
+}
+#profileMenu {
+    z-index: 40;
+}
+
+/* Responsive adjustments */
+@media (min-width: 1024px) {
     #sidebar {
-        @apply -translate-x-full;
+        transform: translateX(0) !important;
     }
-    #mainContent {
-        @apply ml-0;
+    #mobileMenuOpenBtn, #mobileMenuCloseBtn {
+        display: none !important;
+    }
+    #sidebarBackdrop {
+        display: none !important;
     }
 }
 </style>
