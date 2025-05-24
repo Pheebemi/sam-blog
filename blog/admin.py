@@ -44,7 +44,7 @@ class BalanceAdmin(admin.ModelAdmin):
     readonly_fields = ('last_updated',)
     
     def has_delete_permission(self, request, obj=None):
-        return False  # Prevent balance deletion
+        return True  # Allow balance deletion
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Post, PostAdmin)
