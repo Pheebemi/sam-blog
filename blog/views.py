@@ -9,6 +9,8 @@ import random
 from datetime import datetime, timedelta
 from django.http import JsonResponse
 from .models import Transaction
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 
 def blog_index(request):
     context = {
@@ -206,9 +208,51 @@ def transactions_view(request):
 @login_required
 def settings_view(request):
     return render(request, 'dashboard/settings.html')
+
+@login_required
+def update_profile(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            names = name.split()
+            request.user.first_name = names[0]
+            request.user.last_name = ' '.join(names[1:]) if len(names) > 1 else ''
+            request.user.save()
+            messages.success(request, 'Profile updated successfully!')
+        return redirect('dashboard_settings')
+    return redirect('dashboard_settings')
+
+@login_required
+def update_password(request):
+    if request.method == 'POST':
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if not request.user.check_password(current_password):
+            messages.error(request, 'Current password is incorrect.')
+        elif new_password != confirm_password:
+            messages.error(request, 'New passwords do not match.')
+        elif len(new_password) < 8:
+            messages.error(request, 'Password must be at least 8 characters long.')
+        else:
+            request.user.set_password(new_password)
+            request.user.save()
+            update_session_auth_hash(request, request.user)  # Keep user logged in
+            messages.success(request, 'Password updated successfully!')
+        
+        return redirect('dashboard_settings')
+    return redirect('dashboard_settings')
+
 def logout_view(request):
     logout(request)
     return redirect('home')
 
 def home(request):
     return render(request, "home.html")
+
+def privacy_view(request):
+    return render(request, 'privacy.html')
+
+def terms_view(request):
+    return render(request, 'terms.html')

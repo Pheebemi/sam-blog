@@ -650,41 +650,6 @@
 </section>
 {% endblock content %}
 
-<!-- Footer -->
-{% block footer %}
-<footer class="py-20 bg-primary">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            <!-- Logo and Description -->
-            <div class="space-y-6">
-                <a href="/" class="block">
-                    <img src="{% static 'img/log.png' %}" alt="Snowflakes" class="h-40 w-30">
-                </a>
-                <p class="font-poppins text-gray-300">
-                    Real-time cryptocurrency tracking and analysis
-                </p>
-            </div>
-        </div>
-
-        <!-- Bottom Bar -->
-        <div class="pt-8 border-t border-gray-800">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="font-poppins text-gray-400 text-center md:text-left">
-                    © {% now "Y" %} SnowFlakes Investment. All rights reserved.
-                </p>
-                <div class="flex gap-6">
-                    <a href="/privacy" class="font-poppins text-gray-400 hover:text-secondary transition-colors">
-                        Privacy Policy
-                    </a>
-                    <a href="/terms" class="font-poppins text-gray-400 hover:text-secondary transition-colors">
-                        Terms of Service
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
-{% endblock %}
 
 {% block extra_js %}
 <!-- Your existing scripts -->

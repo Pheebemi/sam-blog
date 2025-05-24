@@ -31,8 +31,13 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('dashboard/investments/', views.investments_view, name='dashboard_investments'),
     path('dashboard/transactions/', views.transactions_view, name='dashboard_transactions'),
+    path('dashboard/settings/update-profile/', views.update_profile, name='update_profile'),
+    path('dashboard/settings/update-password/', views.update_password, name='update_password'),
     path('dashboard/settings/', views.settings_view, name='dashboard_settings'),
     path('submit-investment/', views.submit_investment, name='submit_investment'),
+    path('privacy/', views.privacy_view, name='privacy'),
+    path('terms/', views.terms_view, name='terms'),
+
 
     # Blog URLs last
     path('', include('blog.urls')),
