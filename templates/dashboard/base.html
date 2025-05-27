@@ -1,117 +1,131 @@
-{% extends 'base.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard - Snowflakes Investment{% endblock %}</title>
+    {% load static tailwind_tags %}
+    {% tailwind_css %}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
 
-{% block content %}
-<div class="flex h-screen bg-primary overflow-hidden">
-    <!-- Sidebar Backdrop for Mobile -->
-    <div id="sidebarBackdrop" class="fixed inset-0 bg-black/50 z-20 lg:hidden hidden"></div>
+<body class="bg-primary font-poppins min-h-screen text-white">
+    <div class="flex h-screen bg-primary overflow-hidden">
+        <!-- Sidebar Backdrop for Mobile -->
+        <div id="sidebarBackdrop" class="fixed inset-0 bg-black/50 z-20 lg:hidden hidden"></div>
 
-    <!-- Sidebar -->
-    <div id="sidebar" class="bg-dark-100 h-full fixed left-0 top-0 w-64 transform transition-transform duration-300 -translate-x-full lg:translate-x-0 z-30">
-        <div class="p-4">
-            <!-- Logo and Mobile Toggle -->
-            <div class="flex items-center justify-between mb-8">
-                <div class="flex items-center gap-2">
-                    <a href="{% url 'home' %}" class="text-light-100 hover:text-secondary transition-colors flex items-center gap-2">
-                        <h1 class="text-light-100 font-semibold text-xl whitespace-nowrap">Snowflakes</h1>
-                    </a>
+        <!-- Sidebar -->
+        <div id="sidebar" class="bg-dark-100 h-full fixed left-0 top-0 w-64 transform transition-transform duration-300 -translate-x-full lg:translate-x-0 z-30">
+            <div class="p-4">
+                <!-- Logo and Mobile Toggle -->
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center gap-2">
+                        <a href="{% url 'home' %}" class="text-light-100 hover:text-secondary transition-colors flex items-center gap-2">
+                            <h1 class="text-light-100 font-semibold text-xl whitespace-nowrap">Snowflakes</h1>
+                        </a>
+                    </div>
+                    <!-- Mobile toggle button (visible only on mobile) -->
+                    <button id="mobileMenuCloseBtn" class="lg:hidden text-light-100 p-2 hover:bg-dark-200 rounded-lg transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
                 </div>
-                <!-- Mobile toggle button (visible only on mobile) -->
-                <button id="mobileMenuCloseBtn" class="lg:hidden text-light-100 p-2 hover:bg-dark-200 rounded-lg transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
+
+                <!-- Navigation -->
+                <nav class="space-y-1">
+                    <a href="{% url 'dashboard' %}" class="nav-item {% if request.path == '/dashboard/' %}active{% endif %}">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                        </svg>
+                        <span class="">Overview</span>
+                    </a>
+                    
+                    <a href="{% url 'dashboard_investments' %}" class="nav-item {% if 'investments' in request.path %}active{% endif %}">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Investments</span>
+                    </a>
+
+                    <a href="{% url 'dashboard_transactions' %}" class="nav-item {% if 'transactions' in request.path %}active{% endif %}">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                        <span>Transactions</span>
+                    </a>
+
+                    <a href="{% url 'dashboard_settings' %}" class="nav-item {% if 'settings' in request.path %}active{% endif %}">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span>Settings</span>
+                    </a>
+                </nav>
             </div>
-
-            <!-- Navigation -->
-            <nav class="space-y-1">
-                <a href="{% url 'dashboard' %}" class="nav-item {% if request.path == '/dashboard/' %}active{% endif %}">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-                    </svg>
-                    <span class="">Overview</span>
-                </a>
-                
-                <a href="{% url 'dashboard_investments' %}" class="nav-item {% if 'investments' in request.path %}active{% endif %}">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span>Investments</span>
-                </a>
-
-                <a href="{% url 'dashboard_transactions' %}" class="nav-item {% if 'transactions' in request.path %}active{% endif %}">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                    </svg>
-                    <span>Transactions</span>
-                </a>
-
-                <a href="{% url 'dashboard_settings' %}" class="nav-item {% if 'settings' in request.path %}active{% endif %}">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    <span>Settings</span>
-                </a>
-            </nav>
         </div>
-    </div>
 
-    <!-- Main Content -->
-    <div id="mainContent" class="flex-1 flex flex-col transition-all duration-300 lg:ml-64 ml-0">
-        <!-- Top Navigation -->
-        <div class="bg-dark-100 border-b border-dark-200 h-16 flex items-center justify-between px-6">
-            <div class="flex items-center gap-4">
-                <!-- Mobile Menu Button (visible only on mobile) -->
-                <button id="mobileMenuOpenBtn" class="lg:hidden text-light-100 p-2 hover:bg-dark-200 rounded-lg transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-                <!-- Balance Display -->
-                <div class="flex items-center gap-2 px-4 py-2 bg-dark-200 rounded-lg">
-                    <svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <div>
-                        <span class="text-xs text-light-300">Balance</span>
-                        <p class="text-sm font-semibold text-white"> ${{ request.user.account_balance.amount|floatformat:2|default:"0.00" }}</p>
+        <!-- Main Content -->
+        <div id="mainContent" class="flex-1 flex flex-col transition-all duration-300 lg:ml-64 ml-0">
+            <!-- Top Navigation -->
+            <div class="bg-dark-100 border-b border-dark-200 h-16 flex items-center justify-between px-6">
+                <div class="flex items-center gap-4">
+                    <!-- Mobile Menu Button (visible only on mobile) -->
+                    <button id="mobileMenuOpenBtn" class="lg:hidden text-light-100 p-2 hover:bg-dark-200 rounded-lg transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <!-- Balance Display -->
+                    <div class="flex items-center gap-2 px-4 py-2 bg-dark-200 rounded-lg">
+                        <svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div>
+                            <span class="text-xs text-light-300">Balance</span>
+                            <p class="text-sm font-semibold text-white"> ${{ request.user.account_balance.amount|floatformat:2|default:"0.00" }}</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- User Profile Section -->
+                <div class="relative" id="profileDropdown">
+                    <button class="flex items-center gap-2 text-light-100">
+                        <span class="hidden md:block">Welcome, {{ request.user.username }}</span>
+                        <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center font-semibold">
+                            {{ request.user.username|make_list|first|upper }}
+                        </div>
+                    </button>
+                    <!-- Profile Dropdown Menu -->
+                    <div id="profileMenu" class="hidden absolute right-0 top-12 w-48 bg-dark-100 rounded-lg shadow-lg py-2 border border-dark-200 z-40">
+                        <a href="{% url 'home' %}" class="block px-4 py-2 text-light-100 hover:bg-dark-200 transition-colors">
+                            Home
+                        </a>
+                        <a href="{% url 'dashboard_settings' %}" class="block px-4 py-2 text-light-100 hover:bg-dark-200 transition-colors">
+                            Profile Settings
+                        </a>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="w-full text-left px-4 py-2 text-red-500 hover:bg-dark-200 transition-colors">
+                                Logout
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
-            <!-- User Profile Section -->
-            <div class="relative" id="profileDropdown">
-                <button class="flex items-center gap-2 text-light-100">
-                    <span class="hidden md:block">Welcome, {{ request.user.username }}</span>
-                    <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center font-semibold">
-                        {{ request.user.username|make_list|first|upper }}
-                    </div>
-                </button>
-                <!-- Profile Dropdown Menu -->
-                <div id="profileMenu" class="hidden absolute right-0 top-12 w-48 bg-dark-100 rounded-lg shadow-lg py-2 border border-dark-200 z-40">
-                    <a href="{% url 'home' %}" class="block px-4 py-2 text-light-100 hover:bg-dark-200 transition-colors">
-                        Home
-                    </a>
-                    <a href="{% url 'dashboard_settings' %}" class="block px-4 py-2 text-light-100 hover:bg-dark-200 transition-colors">
-                        Profile Settings
-                    </a>
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="w-full text-left px-4 py-2 text-red-500 hover:bg-dark-200 transition-colors">
-                            Logout
-                        </button>
-                    </form>
-                </div>
+
+            <!-- Page Content -->
+            <div class="flex-1 overflow-auto p-6">
+                {% block dashboard_content %}{% endblock %}
             </div>
         </div>
-
-        <!-- Page Content -->
-        <div class="flex-1 overflow-auto p-6">
-            {% block dashboard_content %}{% endblock %}
-        </div>
     </div>
-</div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -287,4 +301,3 @@ body.sidebar-open {
     }
 }
 </style>
-{% endblock %}
